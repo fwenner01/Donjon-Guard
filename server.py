@@ -8,8 +8,8 @@ import random
 class Server:
 
     def __init__(self):
-        self.server = "192.168.0.26"
-        self.port = 5555
+        self.server = input("Enter IP: ") #"192.168.0.26"
+        self.port = int(input("Enter port: ")) #5555
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.game = Game()
         self.pids = [0, 1]

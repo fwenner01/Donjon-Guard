@@ -1,4 +1,5 @@
 import pygame
+import os.path
 from network import Network
 from unit import *
 from player2pos import get_player2_pos
@@ -31,9 +32,9 @@ class Client():
         self.event_length = 0
         self.chat = False
         self.type = ""
-        self.n = Network("192.168.0.26", 5555)
+        self.n = Network(self.get_IP(), self.get_port())
         self.p = self.n.get_p()
-        self.deck_file = "decks/deck1.txt"
+        self.deck_file = "decks/" + self.get_deck_name() + ".txt" #"decks/deck1.txt"
         self.get_name()
         self.world = self.n.get_world()
     
@@ -360,6 +361,50 @@ class Client():
         deck = file.readlines()
         self.n.set_deck(deck)
     
+    def get_IP(self):
+        name = ""
+        pressed = False
+        while pressed == False:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN and len(name) > 0:
+                        pressed = True
+                    elif event.key == pygame.K_BACKSPACE:
+                        if len(name) > 0:
+                            name = name[:-1]
+                    elif len(name) < 20:
+                        name += event.unicode
+            screen.fill((0, 0, 0))
+            text = self.font.render("IP Address: ", 0, (255, 255, 255))
+            screen.blit(text, (10, 10))
+            text = self.font.render(name, 0, (255, 255, 255))
+            screen.blit(text, (160, 10))
+            pygame.display.flip()
+        
+        return name
+    
+    def get_port(self):
+        name = ""
+        pressed = False
+        while pressed == False:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN and len(name) > 0:
+                        pressed = True
+                    elif event.key == pygame.K_BACKSPACE:
+                        if len(name) > 0:
+                            name = name[:-1]
+                    elif len(name) < 20:
+                        name += event.unicode
+            screen.fill((0, 0, 0))
+            text = self.font.render("Port: ", 0, (255, 255, 255))
+            screen.blit(text, (10, 10))
+            text = self.font.render(name, 0, (255, 255, 255))
+            screen.blit(text, (80, 10))
+            pygame.display.flip()
+        
+        return int(name)
+    
     def get_name(self):
         name = ""
         pressed = False
@@ -368,8 +413,9 @@ class Client():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN and len(name) > 0:
                         pressed = True
-                    elif event.key == pygame.K_BACKSPACE and len(name) > 0:
-                        name = name[:-1]
+                    elif event.key == pygame.K_BACKSPACE:
+                        if len(name) > 0:
+                            name = name[:-1]
                     elif len(name) < 10:
                         name += event.unicode
             screen.fill((0, 0, 0))
@@ -380,6 +426,29 @@ class Client():
             pygame.display.flip()
         
         self.n.set_name(name)
+    
+    def get_deck_name(self):
+        name = ""
+        pressed = False
+        while pressed == False:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN and len(name) > 0:
+                        if os.path.isfile("decks/" + name + ".txt"):
+                            pressed = True
+                    elif event.key == pygame.K_BACKSPACE:
+                        if len(name) > 0:
+                            name = name[:-1]
+                    elif len(name) < 10:
+                        name += event.unicode
+            screen.fill((0, 0, 0))
+            text = self.font.render("Deck file: ", 0, (255, 255, 255))
+            screen.blit(text, (10, 10))
+            text = self.font.render(name, 0, (255, 255, 255))
+            screen.blit(text, (120, 10))
+            pygame.display.flip()
+        
+        return name
         
 
 client = Client()
